@@ -23,7 +23,15 @@ const NavBar = () => {
     return user ? (
       <Button onClick={() => logout()}>Log out</Button>
     ) : (
-      <Button onClick={() => loginWithRedirect()}>Log in</Button>
+      <Button
+        onClick={() =>
+          loginWithRedirect().then(() => {
+            console.log('wenas', user);
+          })
+        }
+      >
+        Log in
+      </Button>
     );
   };
 
@@ -35,7 +43,7 @@ const NavBar = () => {
       <NavbarToggler onClick={toggle} />
       <Collapse isOpen={isOpen} navbar>
         <Nav className="mr-auto" navbar>
-          <NavItem>
+          <NavItem active={window.location.pathname === '/collections/'}>
             <Link className="nav-link" to="/collections/">
               My Collections
             </Link>

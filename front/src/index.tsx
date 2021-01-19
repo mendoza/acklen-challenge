@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const domain: string = process.env.REACT_APP_AUTH0_DOMAIN || '';
 const clientId: string = process.env.REACT_APP_AUTH0_CLIENT_ID || '';
+console.log(`${window.location.origin}/user-validation`);
 ReactDOM.render(
-  <Auth0Provider domain={domain} clientId={clientId} redirectUri={window.location.origin}>
+  <Auth0Provider
+    domain={domain}
+    clientId={clientId}
+    redirectUri={`${window.location.origin}/user-validation`}
+  >
     <React.StrictMode>
       <App />
     </React.StrictMode>
