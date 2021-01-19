@@ -1,12 +1,31 @@
 import React, { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Collapse, Navbar, NavbarToggler, Nav, NavItem, NavbarText, Button } from 'reactstrap';
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  Nav,
+  NavItem,
+  NavbarText,
+  Button,
+  Spinner,
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 const NavBar = () => {
-  const { loginWithRedirect, logout, user } = useAuth0();
+  const { loginWithRedirect, logout, user, isLoading } = useAuth0();
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+
+  const showButtonForUser = () => {
+    if (isLoading) return <Spinner color="light" />;
+
+    return user ? (
+      <Button onClick={() => logout()}>Log out</Button>
+    ) : (
+      <Button onClick={() => loginWithRedirect()}>Log in</Button>
+    );
+  };
 
   return (
     <Navbar color="dark" dark expand="md">
@@ -22,13 +41,7 @@ const NavBar = () => {
             </Link>
           </NavItem>
         </Nav>
-        <NavbarText>
-          {user ? (
-            <Button onClick={() => logout()}>Log out</Button>
-          ) : (
-            <Button onClick={() => loginWithRedirect()}>Log in</Button>
-          )}
-        </NavbarText>
+        <NavbarText>{showButtonForUser()}</NavbarText>
       </Collapse>
     </Navbar>
   );
