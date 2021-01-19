@@ -1,9 +1,10 @@
 import React from 'react';
-import './App.css';
+import Login from './components/login';
 
 const App = () => (
   <div className="App">
     <p>first try</p>
+    <Login />
   </div>
 );
 
