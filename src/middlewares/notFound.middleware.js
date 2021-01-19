@@ -1,4 +1,3 @@
-
 // eslint-disable-next-line no-unused-vars
 const NotFound = (_req, res, next) => {
   res.status(404).json({

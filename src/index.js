@@ -7,6 +7,8 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const api = require('./routers/api.router');
+const DefaultError = require('./middlewares/defaultError.middleware');
+const NotFound = require('./middlewares/notFound.middleware');
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -34,6 +36,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use('/api', api);
+api.use(DefaultError);
+api.use(NotFound);
 
 app.listen(PORT, () => {
   console.log(`Server started on port: ${PORT}`);

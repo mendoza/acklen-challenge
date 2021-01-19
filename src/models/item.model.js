@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const itemSchema = new mongoose.Schema(
   {
     collection: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       index: true,
       required: true,
     },
     name: { type: String, required: true },
-    value: { type: Number, required: false },
+    value: { type: Number, required: false, default: 0 },
   },
   { timestamps: true },
 );
