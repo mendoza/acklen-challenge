@@ -3,10 +3,20 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from 'reactstrap';
 
 const Login = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { loginWithRedirect, logout, user } = useAuth0();
+  console.log(user);
   return (
     <div>
-      <Button onClick={() => loginWithRedirect()}>Login</Button>
+      <Button
+        onClick={() =>
+          loginWithRedirect().then((data) => {
+            console.log(data);
+          })
+        }
+      >
+        Login
+      </Button>
+      <Button onClick={() => logout()}>Log out</Button>
     </div>
   );
 };
