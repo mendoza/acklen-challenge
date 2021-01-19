@@ -11,7 +11,7 @@ const ValidateKey = (req, res, next) => {
   }
 
   if (
-    crypto.timingSafeEqual(
+    !crypto.timingSafeEqual(
       Buffer.from(process.env.API_KEY),
       Buffer.from(req.header('treasure-key')),
     )
