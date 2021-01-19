@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const itemSchema = new mongoose.Schema(
+const collectionSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -9,8 +9,9 @@ const itemSchema = new mongoose.Schema(
     },
     name: { type: String, required: true },
     description: { type: String, required: true },
+    private: { type: Boolean, required: true },
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model('collections', itemSchema);
+module.exports = mongoose.model('collections', collectionSchema);
