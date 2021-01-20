@@ -57,7 +57,7 @@ collection.delete('/', (req, res, next) => {
   const { id } = req.body;
   Collections.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
     .then((data) => {
-      Items.deleteMany({ collection: id })
+      Items.deleteMany({ collection: mongoose.Types.ObjectId(id) })
         .then((ItemsData) => {
           res.status(200).json({ success: true, collection: data, items: ItemsData });
         })

@@ -4,6 +4,7 @@ const Items = require('../models/item.model');
 const DefaultError = require('../middlewares/defaultError.middleware');
 const ValidateKey = require('../middlewares/validateKey.middleware');
 const Collections = require('../models/collection.model');
+const shareItems = require('../models/shareItem.model');
 
 const item = express.Router();
 
@@ -22,6 +23,35 @@ item.post('/', (req, res, next) => {
       } else {
         next(new Error('Not an existing collection'));
       }
+    })
+    .catch(next);
+});
+
+item.post('/share', (req, res, next) => {
+  const { itemId } = req.body;
+  shareItems
+    .findOne({ itemId: mongoose.Types.ObjectId(itemId) })
+    .then((possible) => {
+      if (possible === null) {
+        shareItems
+          .create({ itemId })
+          .then((create) => {
+            res.status(200).json({ success: true, shareItem: create });
+          })
+          .catch(next);
+      } else {
+        res.status(200).json({ success: true, shareItem: possible });
+      }
+    })
+    .catch(next);
+});
+
+// Delete an item
+item.delete('/', (req, res, next) => {
+  const { id } = req.body;
+  Items.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
+    .then((data) => {
+      res.status(200).json({ success: true, item: data });
     })
     .catch(next);
 });
