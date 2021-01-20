@@ -33,7 +33,7 @@ collection.post('/', (req, res, next) => {
 // Delete a Collection
 collection.delete('/', (req, res, next) => {
   const { id } = req.body;
-  Collections.findOneAndDelete({ _id: mongoose.Schema.Types.ObjectId(id) })
+  Collections.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
     .then((data) => {
       res.status(200).json({ success: true, collection: data });
     })
@@ -44,8 +44,8 @@ collection.delete('/', (req, res, next) => {
 collection.put('/', (req, res, next) => {
   const { name, user, description, private: notPublic, id } = req.body;
   Collections.findOneAndUpdate(
-    { _id: mongoose.Schema.Types.ObjectId(id) },
-    { name, user, description, private: notPublic },
+    { _id: mongoose.Types.ObjectId(id) },
+    { $set: { name, user, description, private: notPublic } },
   )
     .then((data) => {
       res.status(200).json({ success: true, collection: data });
