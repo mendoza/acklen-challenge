@@ -31,14 +31,6 @@ const MyItems = () => {
   const { user, isLoading } = useAuth0();
   const history = useHistory();
   const params = useParams<any>();
-
-  if (isLoading) {
-    return <Spinner color="primary" />;
-  }
-
-  if (!user) {
-    history.push('/');
-  }
   const [query, setQuery] = useState('');
   const [name, setName] = useState('');
   const [id, setId] = useState('');
@@ -49,8 +41,10 @@ const MyItems = () => {
   });
   const [updateAndCreateModal, setUpdateAndCreateModal] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
+  const [myCollection, setMyCollection] = useState(true);
   const [isUpdate, setIsUpdate] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
+
   const clearData = () => {
     setIsUpdate(false);
     setName('');
@@ -76,16 +70,29 @@ const MyItems = () => {
         },
       )
       .then(({ data }) => {
+        if (data.collection === null) {
+          setMyCollection(false);
+        }
         setItems(data.items);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(() => {});
   };
 
   useEffect(() => {
-    if (realUser.id && items.length === 0) getItems();
+    if (!isLoading && realUser.id && items.length === 0) getItems();
   }, [realUser]);
+
+  if (isLoading) {
+    return (
+      <div className="d-flex w-100 justify-content-center">
+        <Spinner color="primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    history.push('/');
+  }
 
   return (
     <Row className="justify-content-center">
@@ -226,6 +233,18 @@ const MyItems = () => {
         </Col>
       </Row>
       <Row className="w-100">
+        {!myCollection ? <h1 className="w-100 text-center"> </h1> : null}
+        {items.length === 0 ? (
+          <h1 className="w-100 text-center">
+            {!myCollection ? 'Is this even yours? 👀' : 'Wow, much empty 🐕'}
+          </h1>
+        ) : (
+          <div className="w-100">
+            <h2>A little about your collection</h2>
+            <p>{`Right now it has ${items.length} items`}</p>
+            <p>{`Its worth aroud $${items.reduce((p, v) => p + v.value, 0).toFixed(2)}`}</p>
+          </div>
+        )}
         <Table responsive striped hover>
           <thead>
             <tr>
@@ -236,7 +255,6 @@ const MyItems = () => {
             </tr>
           </thead>
           <tbody>
-            {items.length === 0 ? <h1> this place is too empty 😅</h1> : null}
             {items
               .filter((item) => {
                 if (query.length === 0) return true;
@@ -252,6 +270,7 @@ const MyItems = () => {
               })
               .map((item) => (
                 <ItemTableRow
+                  key={item._id}
                   id={item._id}
                   name={item.name}
                   value={item.value}

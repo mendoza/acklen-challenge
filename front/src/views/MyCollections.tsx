@@ -29,14 +29,6 @@ const API_HOST = process.env.REACT_APP_API_HOST || '';
 const MyCollections = () => {
   const { user, isLoading } = useAuth0();
   const history = useHistory();
-  if (isLoading) {
-    return <Spinner color="primary" />;
-  }
-
-  if (!user) {
-    history.push('/');
-  }
-
   const { user: realUser } = useContext(UserContext);
   const { collections, setCollections } = useContext(CollectionsContext);
   const getCollections = () => {
@@ -54,7 +46,7 @@ const MyCollections = () => {
       });
   };
   useEffect(() => {
-    if (realUser.id && collections.length === 0) getCollections();
+    if (!isLoading && realUser.id && collections.length === 0) getCollections();
   }, [realUser]);
 
   const [name, setName] = useState('');
@@ -66,6 +58,18 @@ const MyCollections = () => {
   const [isPrivate, setIsPrivate] = useState(true);
   const [isUpdate, setIsUpdate] = useState(false);
   const [error, setError] = useState({ show: false, message: '' });
+
+  if (isLoading) {
+    return (
+      <div className="d-flex w-100 justify-content-center">
+        <Spinner color="primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    history.push('/');
+  }
 
   const clearData = () => {
     setIsPrivate(true);
