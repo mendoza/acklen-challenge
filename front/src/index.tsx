@@ -16,7 +16,7 @@ ReactDOM.render(
     clientId={clientId}
     redirectUri={`${window.location.origin}/user-validation`}
   >
-    <UserProvider value={{}}>
+    <UserProvider>
       <CollectionsProvider>
         <React.StrictMode>
           <App />
