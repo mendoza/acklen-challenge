@@ -38,7 +38,7 @@ const ShareItem = () => {
           <h1 className="display-3">{item.name}</h1>
           <p className="lead">{`From the collection ${collection.name}`}</p>
           <hr className="my-2" />
-          <p>{`It's valued around $${item.value.toFixed(
+          <p>{`It's valued around $${(item.value || 0).toFixed(
             2,
           )} (Remember the user set this price).`}</p>
         </Jumbotron>
