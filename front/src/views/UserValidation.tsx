@@ -7,8 +7,9 @@ import { UserContext } from '../context/userContext';
 
 const API_KEY = process.env.REACT_APP_API_KEY || '';
 const API_HOST = process.env.REACT_APP_API_HOST || '';
+
 const UserValidation = () => {
-  const userContext = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const { isLoading, user } = useAuth0();
   const history = useHistory();
 
@@ -24,8 +25,7 @@ const UserValidation = () => {
           },
         },
       ).then(({ data }) => {
-        console.log(data);
-        userContext.setUser({ email: data.email, id: data._id });
+        setUser({ email: data.userInfo.email, id: data.userInfo._id });
         history.push('/');
       });
     }

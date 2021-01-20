@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
   Spinner,
@@ -14,6 +14,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
+import { UserContext } from '../context/userContext';
 import CollectionCard from '../components/CollectionCard';
 
 const MyCollections = () => {
@@ -28,7 +29,8 @@ const MyCollections = () => {
   }
 
   const [createModal, setCreateModal] = useState(false);
-
+  const { user: realUser } = useContext(UserContext);
+  console.log(realUser);
   return (
     <Row className="justify-content-center">
       <Modal isOpen={createModal} toggle={() => setCreateModal(!createModal)}>

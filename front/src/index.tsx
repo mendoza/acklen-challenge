@@ -9,7 +9,6 @@ import { UserProvider } from './context/userContext';
 
 const domain: string = process.env.REACT_APP_AUTH0_DOMAIN || '';
 const clientId: string = process.env.REACT_APP_AUTH0_CLIENT_ID || '';
-console.log(`${window.location.origin}/user-validation`);
 ReactDOM.render(
   <Auth0Provider
     domain={domain}
