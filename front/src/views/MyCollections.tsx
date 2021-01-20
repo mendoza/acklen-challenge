@@ -86,7 +86,6 @@ const MyCollections = () => {
           onSubmit={(e) => {
             e.preventDefault();
             e.persist();
-            console.log(id);
             const options = {
               method: isUpdate ? 'put' : 'post',
               url: `${API_HOST}/api/collections`,

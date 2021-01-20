@@ -9,10 +9,10 @@ import {
   CardText,
   Button,
 } from 'reactstrap';
-import Collections from '../Interfaces/Collection';
+import Collection from '../Interfaces/Collection';
 
 type Props = {
-  collection: Collections;
+  collection: Collection;
   onUpdate: () => void;
   onDelete: () => void;
   onClick: () => void;

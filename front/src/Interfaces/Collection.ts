@@ -1,4 +1,4 @@
-interface Collections {
+interface Collection {
   _id: string;
   name: string;
   description: string;
@@ -6,4 +6,4 @@ interface Collections {
   private: boolean;
 }
 
-export default Collections;
+export default Collection;
