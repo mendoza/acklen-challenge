@@ -6,12 +6,28 @@ const helmet = require('helmet');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const api = require('./routers/api.router');
 const DefaultError = require('./middlewares/defaultError.middleware');
 const NotFound = require('./middlewares/notFound.middleware');
 
 const app = express();
 const PORT = process.env.PORT || 80;
+const MONGO_URI = process.env.MONGO_URI || '';
+
+mongoose.connect(
+  MONGO_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  },
+  (err) => {
+    if (err) throw err;
+    console.log('successfully connected to MongoDB');
+  },
+);
 
 app.use(cors());
 app.use(body.urlencoded({ extended: true }));

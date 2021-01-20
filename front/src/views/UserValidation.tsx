@@ -1,25 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
+import Axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Spinner, Row, Col } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
+import { UserContext } from '../context/userContext';
 
 const API_KEY = process.env.REACT_APP_API_KEY || '';
+const API_HOST = process.env.REACT_APP_API_HOST || '';
 const UserValidation = () => {
+  const userContext = useContext(UserContext);
   const { isLoading, user } = useAuth0();
   const history = useHistory();
 
   useEffect(() => {
     if (user !== undefined) {
       const { email } = user;
-      console.log(email);
-      console.log(user);
-      fetch('http://localhost:3001/api/users', {
-        method: 'post',
-        headers: {
-          'treasure-key': API_KEY,
+      Axios.post(
+        `${API_HOST}/api/users`,
+        { email },
+        {
+          headers: {
+            'treasure-key': API_KEY,
+          },
         },
-        body: JSON.stringify({ email }),
-      }).then(() => {
+      ).then(({ data }) => {
+        console.log(data);
+        userContext.setUser({ email: data.email, id: data._id });
         history.push('/');
       });
     }

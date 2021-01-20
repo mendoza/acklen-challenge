@@ -5,6 +5,7 @@ import './index.css';
 import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { UserProvider } from './context/userContext';
 
 const domain: string = process.env.REACT_APP_AUTH0_DOMAIN || '';
 const clientId: string = process.env.REACT_APP_AUTH0_CLIENT_ID || '';
@@ -15,9 +16,11 @@ ReactDOM.render(
     clientId={clientId}
     redirectUri={`${window.location.origin}/user-validation`}
   >
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <UserProvider value={{}}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </UserProvider>
   </Auth0Provider>,
   document.getElementById('root'),
 );

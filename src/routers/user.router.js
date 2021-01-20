@@ -9,9 +9,17 @@ user.use(ValidateKey);
 
 user.post('/', (req, res, next) => {
   const { email } = req.body;
-  Users.create({ email })
-    .then((data) => {
-      res.status(200).json({ success: true, userInfo: data });
+  Users.findOne({ email })
+    .then((possible) => {
+      if (possible === null) {
+        Users.create({ email })
+          .then((data) => {
+            res.status(200).json({ success: true, userInfo: data });
+          })
+          .catch(next);
+      } else {
+        res.status(200).json({ success: true, userInfo: possible });
+      }
     })
     .catch(next);
 });
