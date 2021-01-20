@@ -12,6 +12,9 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Form,
+  FormGroup,
+  Label,
 } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -32,9 +35,8 @@ const MyCollections = () => {
     history.push('/');
   }
 
-  const [createModal, setCreateModal] = useState(false);
   const { user: realUser } = useContext(UserContext);
-  const { setCollections } = useContext(CollectionsContext);
+  const { collections, setCollections } = useContext(CollectionsContext);
 
   useEffect(() => {
     axios
@@ -51,26 +53,49 @@ const MyCollections = () => {
       });
   }, []);
 
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
+  const [createModal, setCreateModal] = useState(false);
+  const [private, setIsPrivate] = useState(true);
+
   return (
     <Row className="justify-content-center">
       <Modal isOpen={createModal} toggle={() => setCreateModal(!createModal)}>
-        <ModalHeader toggle={() => setCreateModal(!createModal)}>Modal title</ModalHeader>
-        <ModalBody>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-          est laborum.
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={() => setCreateModal(!createModal)}>
-            Do Something
-          </Button>{' '}
-          <Button color="secondary" onClick={() => setCreateModal(!createModal)}>
-            Cancel
-          </Button>
-        </ModalFooter>
+        <ModalHeader toggle={() => setCreateModal(!createModal)}>Create a Collection</ModalHeader>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.persist();
+          }}
+        >
+          <ModalBody>
+            <FormGroup>
+              <Label for="collectionName">Name</Label>
+              <Input type="text" name="collectionName" placeholder="Rocks, Coins..." />
+            </FormGroup>
+            <FormGroup>
+              <Label for="collectionDescription">Description</Label>
+              <Input
+                type="textarea"
+                name="collectionDescription"
+                placeholder="includes coins from 1930 until 2000"
+              />
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input type="checkbox" /> Is Private
+              </Label>
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button type="submit" color="primary" onClick={() => setCreateModal(!createModal)}>
+              Create
+            </Button>{' '}
+            <Button color="danger" onClick={() => setCreateModal(!createModal)}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Form>
       </Modal>
 
       <Row className="w-100">
@@ -89,11 +114,9 @@ const MyCollections = () => {
         </Col>
       </Row>
       <Row>
-        <CollectionCard />
-        <CollectionCard />
-        <CollectionCard />
-        <CollectionCard />
-        <CollectionCard />
+        {collections.map(() => (
+          <CollectionCard />
+        ))}
       </Row>
     </Row>
   );
