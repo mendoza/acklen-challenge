@@ -33,17 +33,20 @@ collection.post('/', (req, res, next) => {
 
 // get a collection's items
 collection.post('/items', (req, res, next) => {
-  const { user, CollectionId } = req.body;
-  Collections.findOne({ user, _id: CollectionId })
+  const { user, collectionId } = req.body;
+  Collections.findOne({
+    user: mongoose.Types.ObjectId(user),
+    _id: mongoose.Types.ObjectId(collectionId),
+  })
     .then((coll) => {
       if (coll !== null) {
-        Items.find({ collectionId: CollectionId })
+        Items.find({ collectionId: mongoose.Types.ObjectId(collectionId) })
           .then((items) => {
             res.status(200).json({ success: true, collection: coll, items });
           })
           .catch(next);
       } else {
-        res.status(200).json({ success: false });
+        res.status(200).json({ success: false, collection: coll, items: [] });
       }
     })
     .catch(next);

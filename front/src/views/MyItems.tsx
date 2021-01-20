@@ -21,8 +21,8 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios, { AxiosRequestConfig } from 'axios';
 import { UserContext } from '../context/userContext';
-import Collection from '../Interfaces/Collection';
 import Item from '../Interfaces/item';
+import ItemTableRow from '../components/ItemTableRow';
 
 const API_KEY = process.env.REACT_APP_API_KEY || '';
 const API_HOST = process.env.REACT_APP_API_HOST || '';
@@ -41,19 +41,24 @@ const MyItems = () => {
   }
   const [query, setQuery] = useState('');
   const [name, setName] = useState('');
+  const [id, setId] = useState('');
   const [price, setPrice] = useState(0);
   const [error, setError] = useState({
     show: false,
     message: '',
   });
   const [updateAndCreateModal, setUpdateAndCreateModal] = useState(false);
-  const [collection, setCollection] = useState<Collection>({} as Collection);
   const [items, setItems] = useState<Item[]>([]);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
   const clearData = () => {
     setIsUpdate(false);
     setName('');
     setPrice(0);
+    setError({
+      show: false,
+      message: '',
+    });
   };
   const { user: realUser } = useContext(UserContext);
   const getItems = () => {
@@ -71,9 +76,7 @@ const MyItems = () => {
         },
       )
       .then(({ data }) => {
-        setCollection(data.collection);
         setItems(data.items);
-        console.log(collection);
       })
       .catch((err) => {
         console.log(err);
@@ -103,7 +106,7 @@ const MyItems = () => {
               headers: {
                 'treasure-key': API_KEY,
               },
-              data: { name, value: price, collectionId: params.collectionId },
+              data: { name, value: price, collectionId: params.collectionId, id },
             } as AxiosRequestConfig;
             axios(options)
               .then(() => {
@@ -159,6 +162,46 @@ const MyItems = () => {
           </ModalFooter>
         </Form>
       </Modal>
+
+      <Modal isOpen={confirmation} toggle={() => setConfirmation(!confirmation)}>
+        <ModalHeader
+          toggle={() => setConfirmation(!confirmation)}
+        >{`Are you sure you want to delete the item ${name}?`}</ModalHeader>
+        <ModalBody>
+          Take in mind this change is permanent 😢
+          <Alert color="danger" isOpen={error.show}>
+            {error.message}
+          </Alert>
+        </ModalBody>
+        <ModalFooter className="d-flex justify-content-center">
+          <Button
+            color="danger"
+            onClick={() => {
+              axios
+                .delete(`${API_HOST}/api/items/`, {
+                  data: { id },
+                  headers: {
+                    'treasure-key': API_KEY,
+                  },
+                })
+                .then(() => {
+                  setConfirmation(!confirmation);
+                  getItems();
+                  clearData();
+                })
+                .catch((err) => {
+                  setError({ show: true, message: err.message });
+                });
+            }}
+          >
+            Yes I&apos;m sure!
+          </Button>{' '}
+          <Button color="success" onClick={() => setConfirmation(!confirmation)}>
+            take me back!
+          </Button>
+        </ModalFooter>
+      </Modal>
+
       <Row className="w-100">
         <Col>
           <InputGroup>
@@ -186,31 +229,47 @@ const MyItems = () => {
         <Table responsive striped hover>
           <thead>
             <tr>
-              <th>#</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Username</th>
+              <th>Unique Id</th>
+              <th>Name</th>
+              <th>Value</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Larry</td>
-              <td>the Bird</td>
-              <td>@twitter</td>
-            </tr>
+            {items.length === 0 ? <h1> this place is too empty 😅</h1> : null}
+            {items
+              .filter((item) => {
+                if (query.length === 0) return true;
+                const searchRegex = new RegExp(
+                  query
+                    .toLowerCase()
+                    .split(/ /)
+                    .filter((l) => l !== '')
+                    .join('|'),
+                  'i',
+                );
+                return item.name.toLowerCase().search(searchRegex) !== -1;
+              })
+              .map((item) => (
+                <ItemTableRow
+                  id={item._id}
+                  name={item.name}
+                  value={item.value}
+                  onDelete={() => {
+                    setConfirmation(true);
+                    setId(item._id);
+                    setName(item.name);
+                    setPrice(item.value);
+                  }}
+                  onUpdate={() => {
+                    setIsUpdate(true);
+                    setId(item._id);
+                    setName(item.name);
+                    setPrice(item.value);
+                    setUpdateAndCreateModal(true);
+                  }}
+                />
+              ))}
           </tbody>
         </Table>
       </Row>
