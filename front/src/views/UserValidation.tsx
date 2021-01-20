@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Spinner, Row, Col } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
@@ -16,18 +16,20 @@ const UserValidation = () => {
   useEffect(() => {
     if (user !== undefined) {
       const { email } = user;
-      Axios.post(
-        `${API_HOST}/api/users`,
-        { email },
-        {
-          headers: {
-            'treasure-key': API_KEY,
+      axios
+        .post(
+          `${API_HOST}/api/users`,
+          { email },
+          {
+            headers: {
+              'treasure-key': API_KEY,
+            },
           },
-        },
-      ).then(({ data }) => {
-        setUser({ email: data.userInfo.email, id: data.userInfo._id });
-        history.push('/');
-      });
+        )
+        .then(({ data }) => {
+          setUser({ email: data.userInfo.email, id: data.userInfo._id });
+          history.push('/');
+        });
     }
   }, [user]);
   if (isLoading) {

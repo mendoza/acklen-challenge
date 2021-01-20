@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
   Spinner,
@@ -14,9 +14,13 @@ import {
   ModalFooter,
 } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
-import { UserContext } from '../context/userContext';
+import axios from 'axios';
 import CollectionCard from '../components/CollectionCard';
+import { UserContext } from '../context/userContext';
+import { CollectionsContext } from '../context/collectionsContext';
 
+const API_KEY = process.env.REACT_APP_API_KEY || '';
+const API_HOST = process.env.REACT_APP_API_HOST || '';
 const MyCollections = () => {
   const { user, isLoading } = useAuth0();
   const history = useHistory();
@@ -30,7 +34,23 @@ const MyCollections = () => {
 
   const [createModal, setCreateModal] = useState(false);
   const { user: realUser } = useContext(UserContext);
-  console.log(realUser);
+  const { setCollections } = useContext(CollectionsContext);
+
+  useEffect(() => {
+    axios
+      .get(`${API_HOST}/api/collections/${realUser.id}`, {
+        headers: {
+          'treasure-key': API_KEY,
+        },
+      })
+      .then(({ data }) => {
+        setCollections(data.collections);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <Row className="justify-content-center">
       <Modal isOpen={createModal} toggle={() => setCreateModal(!createModal)}>
