@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema(
   {
-    collection: {
+    collectionId: {
       type: mongoose.Schema.Types.ObjectId,
       index: true,
       required: true,

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const DefaultError = require('../middlewares/defaultError.middleware');
 const ValidateKey = require('../middlewares/validateKey.middleware');
 const Collections = require('../models/collection.model');
+const Items = require('../models/item.model');
 
 const collection = express.Router();
 
@@ -30,12 +31,34 @@ collection.post('/', (req, res, next) => {
     .catch(next);
 });
 
+// Create a collection
+collection.post('/items', (req, res, next) => {
+  const { user, CollectionId } = req.body;
+  Collections.findOne({ user, _id: CollectionId })
+    .then((coll) => {
+      if (coll !== null) {
+        Items.find({ collectionId: CollectionId })
+          .then((items) => {
+            res.status(200).json({ success: true, collection: coll, items });
+          })
+          .catch(next);
+      } else {
+        res.status(200).json({ success: false });
+      }
+    })
+    .catch(next);
+});
+
 // Delete a Collection
 collection.delete('/', (req, res, next) => {
   const { id } = req.body;
   Collections.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
     .then((data) => {
-      res.status(200).json({ success: true, collection: data });
+      Items.deleteMany({ collection: id })
+        .then((ItemsData) => {
+          res.status(200).json({ success: true, collection: data, items: ItemsData });
+        })
+        .catch(next);
     })
     .catch(next);
 });
