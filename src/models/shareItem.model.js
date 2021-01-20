@@ -7,7 +7,7 @@ const shareItems = new mongoose.Schema(
       index: true,
       required: true,
     },
-    expire_at: { type: Date, default: Date.now, expires: 60 },
+    expire_at: { type: Date, default: Date.now, expires: 60 * 60 * 24 },
   },
   { timestamps: true },
 );
