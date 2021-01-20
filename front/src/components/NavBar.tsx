@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
   Collapse,
@@ -11,14 +11,9 @@ import {
   Spinner,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { UserContext } from '../context/userContext';
 
-const API_KEY = process.env.REACT_APP_API_KEY || '';
-const API_HOST = process.env.REACT_APP_API_HOST || '';
 const NavBar = () => {
   const { loginWithRedirect, logout, user, isLoading } = useAuth0();
-  const { setUser } = useContext(UserContext);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
@@ -31,25 +26,6 @@ const NavBar = () => {
       <Button onClick={() => loginWithRedirect()}>Log in</Button>
     );
   };
-
-  useEffect(() => {
-    if (user !== undefined) {
-      const { email } = user;
-      axios
-        .post(
-          `${API_HOST}/api/users`,
-          { email },
-          {
-            headers: {
-              'treasure-key': API_KEY,
-            },
-          },
-        )
-        .then(({ data }) => {
-          setUser({ email: data.userInfo.email, id: data.userInfo._id });
-        });
-    }
-  }, [user]);
 
   return (
     <Navbar color="dark" dark expand="md">
