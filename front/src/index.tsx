@@ -11,11 +11,7 @@ import { CollectionsProvider } from './context/collectionsContext';
 const domain: string = process.env.REACT_APP_AUTH0_DOMAIN || '';
 const clientId: string = process.env.REACT_APP_AUTH0_CLIENT_ID || '';
 ReactDOM.render(
-  <Auth0Provider
-    domain={domain}
-    clientId={clientId}
-    redirectUri={`${window.location.origin}/user-validation`}
-  >
+  <Auth0Provider domain={domain} clientId={clientId} redirectUri={`${window.location.origin}`}>
     <UserProvider>
       <CollectionsProvider>
         <React.StrictMode>
