@@ -40,9 +40,6 @@ const MyCollections = () => {
       })
       .then(({ data }) => {
         setCollections(data.collections);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   };
   useEffect(() => {
