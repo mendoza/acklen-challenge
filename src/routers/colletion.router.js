@@ -31,7 +31,7 @@ collection.post('/', (req, res, next) => {
     .catch(next);
 });
 
-// Create a collection
+// get a collection's items
 collection.post('/items', (req, res, next) => {
   const { user, CollectionId } = req.body;
   Collections.findOne({ user, _id: CollectionId })
