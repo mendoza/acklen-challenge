@@ -9,21 +9,23 @@ import {
   CardText,
   Button,
 } from 'reactstrap';
+import Collections from '../Interfaces/Collection';
 
-const CollectionCard = () => (
+type Props = {
+  collection: Collections;
+};
+
+const CollectionCard = ({ collection }: Props) => (
   <>
     <Col xs={3} className="mt-3">
       <Card>
         <CardImg top width="100%" src="/assets/treasure.png" alt="Card image cap" />
         <CardBody>
-          <CardTitle tag="h5">Card title</CardTitle>
+          <CardTitle tag="h5">{collection.name}</CardTitle>
           <CardSubtitle tag="h6" className="mb-2 text-muted">
-            Card subtitle
+            {collection.private ? 'Is Private' : 'Is Public'}
           </CardSubtitle>
-          <CardText>
-            Some quick example text to build on the card title and make up the bulk of the
-            card&apos;s content.
-          </CardText>
+          <CardText>{collection.description}</CardText>
           <Button>Button</Button>
         </CardBody>
       </Card>

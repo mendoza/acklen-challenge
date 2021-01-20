@@ -1,8 +1,9 @@
 interface Collections {
   id: string;
   name: string;
+  description: string;
   user: string;
-  private: string;
+  private: Boolean;
 }
 
 export default Collections;

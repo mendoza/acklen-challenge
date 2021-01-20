@@ -22,8 +22,8 @@ collection.get('/:userId', (req, res, next) => {
 
 // Create a collection
 collection.post('/', (req, res, next) => {
-  const { name, user, description, private: notPublic } = req.body;
-  Collections.create({ name, user, description, private: notPublic })
+  const { name, user, description, isPrivate } = req.body;
+  Collections.create({ name, user, description, private: isPrivate })
     .then((data) => {
       res.status(200).json({ success: true, collection: data });
     })
