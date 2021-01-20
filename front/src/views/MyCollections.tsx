@@ -60,6 +60,7 @@ const MyCollections = () => {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [description, setDescription] = useState('');
+  const [query, setQuery] = useState('');
   const [updateAndCreateModal, setUpdateAndCreateModal] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [isPrivate, setIsPrivate] = useState(true);
@@ -203,11 +204,16 @@ const MyCollections = () => {
       <Row className="w-100">
         <Col>
           <InputGroup>
-            <Input placeholder="Collection Name" />
+            <Input
+              placeholder="Search by Collection Name"
+              value={query}
+              type="text"
+              onChange={(e) => {
+                const { value } = e.target;
+                setQuery(value);
+              }}
+            />
             <InputGroupAddon addonType="append">
-              <Button color="primary">
-                <i className="fas fa-search" />
-              </Button>
               <Button
                 color="success"
                 onClick={() => setUpdateAndCreateModal(!updateAndCreateModal)}
@@ -219,33 +225,47 @@ const MyCollections = () => {
         </Col>
       </Row>
       <Row className="w-100">
-        {collections.map((item: any) => {
-          const coll = item as Collection;
-          return (
-            <CollectionCard
-              onClick={() => {
-                history.push(`/items/${coll._id}`);
-              }}
-              key={coll._id}
-              collection={coll}
-              onDelete={() => {
-                setConfirmation(true);
-                setId(coll._id);
-                setName(coll.name);
-                setDescription(coll.description);
-                setIsPrivate(coll.private);
-              }}
-              onUpdate={() => {
-                setId(coll._id);
-                setIsUpdate(true);
-                setName(coll.name);
-                setDescription(coll.description);
-                setIsPrivate(coll.private);
-                setUpdateAndCreateModal(true);
-              }}
-            />
-          );
-        })}
+        {collections
+          .filter((item) => {
+            if (query.length === 0) return true;
+            const coll = item as Collection;
+            const searchRegex = new RegExp(
+              query
+                .toLowerCase()
+                .split(/ /)
+                .filter((l) => l !== '')
+                .join('|'),
+              'i',
+            );
+            return coll.name.toLowerCase().search(searchRegex) !== -1;
+          })
+          .map((item: any) => {
+            const coll = item as Collection;
+            return (
+              <CollectionCard
+                onClick={() => {
+                  history.push(`/items/${coll._id}`);
+                }}
+                key={coll._id}
+                collection={coll}
+                onDelete={() => {
+                  setConfirmation(true);
+                  setId(coll._id);
+                  setName(coll.name);
+                  setDescription(coll.description);
+                  setIsPrivate(coll.private);
+                }}
+                onUpdate={() => {
+                  setId(coll._id);
+                  setIsUpdate(true);
+                  setName(coll.name);
+                  setDescription(coll.description);
+                  setIsPrivate(coll.private);
+                  setUpdateAndCreateModal(true);
+                }}
+              />
+            );
+          })}
       </Row>
     </Row>
   );

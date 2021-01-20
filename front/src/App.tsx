@@ -5,6 +5,7 @@ import NavBar from './components/NavBar';
 import Error404 from './views/Error404';
 import Home from './views/Home';
 import MyCollections from './views/MyCollections';
+import MyItems from './views/MyItems';
 import UserValidation from './views/UserValidation';
 
 const App = () => (
@@ -18,6 +19,9 @@ const App = () => (
           </Route>
           <Route exact path="/collections">
             <MyCollections />
+          </Route>
+          <Route exact path="/items/:collectionId">
+            <MyItems />
           </Route>
           <Route exact path="/user-validation">
             <UserValidation />
