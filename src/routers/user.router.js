@@ -8,11 +8,11 @@ const user = express.Router();
 user.use(ValidateKey);
 
 user.post('/', (req, res, next) => {
-  const { email } = req.body;
-  Users.findOne({ email })
+  const { sub } = req.body;
+  Users.findOne({ sub })
     .then((possible) => {
       if (possible === null) {
-        Users.create({ email })
+        Users.create({ sub })
           .then((data) => {
             res.status(200).json({ success: true, userInfo: data });
           })

@@ -1,6 +1,6 @@
 interface User {
   id: string;
-  email: string;
+  sub: string;
 }
 
 export default User;

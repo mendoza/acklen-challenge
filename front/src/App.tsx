@@ -20,11 +20,11 @@ const App = () => {
 
   useEffect(() => {
     if (!isLoading && user !== undefined) {
-      const { email } = user;
+      const { sub } = user;
       axios
         .post(
           `${API_HOST}/api/users`,
-          { email },
+          { sub },
           {
             headers: {
               'treasure-key': API_KEY,
@@ -32,7 +32,7 @@ const App = () => {
           },
         )
         .then(({ data }) => {
-          setUser({ email: data.userInfo.email, id: data.userInfo._id });
+          setUser({ sub, id: data.userInfo._id });
         });
     }
   }, [user]);
