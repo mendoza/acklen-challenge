@@ -40,16 +40,19 @@ collection.post('/items', (req, res, next) => {
     .then((coll) => {
       Items.find({ collectionId: mongoose.Types.ObjectId(collectionId) })
         .then((items) => {
-          if (user === coll.user || !coll.private) {
-            res
-              .status(200)
-              .json({ success: true, collection: coll, items, userIsOwner: user === coll.user });
+          if (user === coll.user.toString() || !coll.private) {
+            res.status(200).json({
+              success: true,
+              collection: coll,
+              items,
+              userIsOwner: user === coll.user.toString(),
+            });
           } else {
             res.status(200).json({
               success: false,
               collection: coll,
               items: [],
-              userIsOwner: user === coll.user,
+              userIsOwner: user === coll.user.toString(),
             });
           }
         })
