@@ -24,3 +24,6 @@ front/build/
 # dotenv environment variables file
 .env
 .env.test
+
+mongo-volume
+
