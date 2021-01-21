@@ -35,19 +35,25 @@ collection.post('/', (req, res, next) => {
 collection.post('/items', (req, res, next) => {
   const { user, collectionId } = req.body;
   Collections.findOne({
-    user: mongoose.Types.ObjectId(user),
     _id: mongoose.Types.ObjectId(collectionId),
   })
     .then((coll) => {
-      if (coll !== null) {
-        Items.find({ collectionId: mongoose.Types.ObjectId(collectionId) })
-          .then((items) => {
-            res.status(200).json({ success: true, collection: coll, items });
-          })
-          .catch(next);
-      } else {
-        res.status(200).json({ success: false, collection: coll, items: [] });
-      }
+      Items.find({ collectionId: mongoose.Types.ObjectId(collectionId) })
+        .then((items) => {
+          if (user === coll.user || !coll.private) {
+            res
+              .status(200)
+              .json({ success: true, collection: coll, items, userIsOwner: user === coll.user });
+          } else {
+            res.status(200).json({
+              success: false,
+              collection: coll,
+              items: [],
+              userIsOwner: user === coll.user,
+            });
+          }
+        })
+        .catch(next);
     })
     .catch(next);
 });
@@ -57,7 +63,7 @@ collection.delete('/', (req, res, next) => {
   const { id } = req.body;
   Collections.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
     .then((data) => {
-      Items.deleteMany({ collection: mongoose.Types.ObjectId(id) })
+      Items.deleteMany({ collectionId: mongoose.Types.ObjectId(id) })
         .then((ItemsData) => {
           res.status(200).json({ success: true, collection: data, items: ItemsData });
         })

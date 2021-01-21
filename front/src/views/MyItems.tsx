@@ -41,6 +41,7 @@ const MyItems = () => {
   });
   const [updateAndCreateModal, setUpdateAndCreateModal] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
+  const [isEmpty, setIsEmpty] = useState(true);
   const [myCollection, setMyCollection] = useState(true);
   const [isUpdate, setIsUpdate] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
@@ -70,10 +71,9 @@ const MyItems = () => {
         },
       )
       .then(({ data }) => {
-        if (data.collection === null) {
-          setMyCollection(false);
-        }
         setItems(data.items);
+        setIsEmpty(false);
+        setMyCollection(data.userIsOwner);
       })
       .catch(() => {});
   };
@@ -142,10 +142,11 @@ const MyItems = () => {
               />
             </FormGroup>
             <FormGroup>
-              <Label for="itemValue">Name</Label>
+              <Label for="itemValue">Price</Label>
               <Input
                 type="number"
                 min="0"
+                step="0.01"
                 name="itemValue"
                 value={price}
                 onChange={(e) => {
@@ -221,19 +222,20 @@ const MyItems = () => {
                 setQuery(value);
               }}
             />
-            <InputGroupAddon addonType="append">
-              <Button
-                color="success"
-                onClick={() => setUpdateAndCreateModal(!updateAndCreateModal)}
-              >
-                <i className="fas fa-plus" />
-              </Button>
-            </InputGroupAddon>
+            {myCollection ? (
+              <InputGroupAddon addonType="append">
+                <Button
+                  color="success"
+                  onClick={() => setUpdateAndCreateModal(!updateAndCreateModal)}
+                >
+                  <i className="fas fa-plus" />
+                </Button>
+              </InputGroupAddon>
+            ) : null}
           </InputGroup>
         </Col>
       </Row>
       <Row className="w-100">
-        {!myCollection ? <h1 className="w-100 text-center"> </h1> : null}
         {items.length === 0 ? (
           <h1 className="w-100 text-center">
             {!myCollection ? 'Is this even yours? 👀' : 'Wow, much empty 🐕'}
@@ -245,52 +247,59 @@ const MyItems = () => {
             <p>{`Its worth aroud $${items.reduce((p, v) => p + v.value, 0).toFixed(2)}`}</p>
           </div>
         )}
-        <Table responsive striped hover>
-          <thead>
-            <tr>
-              <th>Unique Id</th>
-              <th>Name</th>
-              <th>Value</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items
-              .filter((item) => {
-                if (query.length === 0) return true;
-                const searchRegex = new RegExp(
-                  query
-                    .toLowerCase()
-                    .split(/ /)
-                    .filter((l) => l !== '')
-                    .join('|'),
-                  'i',
-                );
-                return item.name.toLowerCase().search(searchRegex) !== -1;
-              })
-              .map((item) => (
-                <ItemTableRow
-                  key={item._id}
-                  id={item._id}
-                  name={item.name}
-                  value={item.value}
-                  onDelete={() => {
-                    setConfirmation(true);
-                    setId(item._id);
-                    setName(item.name);
-                    setPrice(item.value);
-                  }}
-                  onUpdate={() => {
-                    setIsUpdate(true);
-                    setId(item._id);
-                    setName(item.name);
-                    setPrice(item.value);
-                    setUpdateAndCreateModal(true);
-                  }}
-                />
-              ))}
-          </tbody>
-        </Table>
+        {isEmpty ? (
+          <div className="w-100 d-flex justify-content-center">
+            <Spinner color="primary" />
+          </div>
+        ) : (
+          <Table responsive striped hover>
+            <thead>
+              <tr>
+                <th>Unique Id</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items
+                .filter((item) => {
+                  if (query.length === 0) return true;
+                  const searchRegex = new RegExp(
+                    query
+                      .toLowerCase()
+                      .split(/ /)
+                      .filter((l) => l !== '')
+                      .join('|'),
+                    'i',
+                  );
+                  return item.name.toLowerCase().search(searchRegex) !== -1;
+                })
+                .map((item) => (
+                  <ItemTableRow
+                    key={item._id}
+                    id={item._id}
+                    name={item.name}
+                    value={item.value}
+                    myCollection={myCollection}
+                    onDelete={() => {
+                      setConfirmation(true);
+                      setId(item._id);
+                      setName(item.name);
+                      setPrice(item.value);
+                    }}
+                    onUpdate={() => {
+                      setIsUpdate(true);
+                      setId(item._id);
+                      setName(item.name);
+                      setPrice(item.value);
+                      setUpdateAndCreateModal(true);
+                    }}
+                  />
+                ))}
+            </tbody>
+          </Table>
+        )}
       </Row>
     </Row>
   );

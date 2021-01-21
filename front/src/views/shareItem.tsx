@@ -26,6 +26,7 @@ const ShareItem = () => {
         },
       )
       .then(({ data }) => {
+        console.log(data);
         setItem(data.sharedItem);
         setCollection(data.collection);
       });

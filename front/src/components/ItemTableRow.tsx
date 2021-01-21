@@ -6,6 +6,7 @@ type Props = {
   id: string;
   name: string;
   value: number;
+  myCollection: boolean;
   onUpdate: () => void;
   onDelete: () => void;
 };
@@ -13,7 +14,7 @@ type Props = {
 const API_KEY = process.env.REACT_APP_API_KEY || '';
 const API_HOST = process.env.REACT_APP_API_HOST || '';
 
-const ItemTableRow = ({ id, name, value, onDelete, onUpdate }: Props) => {
+const ItemTableRow = ({ id, name, value, onDelete, onUpdate, myCollection }: Props) => {
   const [coppied, setCoppied] = useState(false);
   return (
     <tr>
@@ -47,12 +48,16 @@ const ItemTableRow = ({ id, name, value, onDelete, onUpdate }: Props) => {
         >
           <i className={`fas ${coppied ? 'fa-check' : 'fa-share-alt'}`} />
         </Button>
-        <Button color="warning" onClick={onUpdate}>
-          <i className="fas fa-pen" />
-        </Button>
-        <Button color="danger" onClick={onDelete}>
-          <i className="fas fa-trash" />
-        </Button>
+        {myCollection ? (
+          <>
+            <Button color="warning" onClick={onUpdate}>
+              <i className="fas fa-pen" />
+            </Button>
+            <Button color="danger" onClick={onDelete}>
+              <i className="fas fa-trash" />
+            </Button>
+          </>
+        ) : null}
       </td>
     </tr>
   );
