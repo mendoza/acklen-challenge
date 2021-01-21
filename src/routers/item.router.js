@@ -54,7 +54,7 @@ item.put('/share', (req, res, next) => {
     .findOne({ _id: mongoose.Types.ObjectId(shareId) })
     .then((possible) => {
       if (possible !== null) {
-        Items.findOne().then((sharedItem) => {
+        Items.findOne({ _id: mongoose.Types.ObjectId(possible.itemId) }).then((sharedItem) => {
           Collections.findOne({ _id: mongoose.Types.ObjectId(sharedItem.collectionId) }).then(
             (data) => {
               res.status(200).json({ success: true, sharedItem, collection: data });
