@@ -57,6 +57,7 @@ const MyCollections = () => {
   };
   useEffect(() => {
     if (!isLoading && realUser.id && collections.length === 0) getCollections();
+    else setIsEmpty(collections.length === 0);
   }, [realUser]);
 
   if (isLoading) {
